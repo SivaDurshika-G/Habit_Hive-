@@ -21,32 +21,38 @@ document.addEventListener("DOMContentLoaded", () => {
     habitForm.reset();
   });
 
-  // Notifications Section
-const notifyBtn = document.getElementById("notify-btn");
+  document.addEventListener("DOMContentLoaded", () => {
+  const notifyBtn = document.getElementById("notify-btn");
 
-notifyBtn.addEventListener("click", () => {
-  // Check for Notification API support
-  if (!("Notification" in window)) {
-    alert("This browser does not support desktop notifications.");
-    return;
-  }
+  notifyBtn.addEventListener("click", () => {
+    // Check if Notification API is supported
+    if (!("Notification" in window)) {
+      alert("Your browser does not support notifications.");
+      return;
+    }
 
-  // Request permission if not already granted
-  if (Notification.permission === "granted") {
+    // Check Notification Permission
+    if (Notification.permission === "granted") {
+      // Show notification directly
+      showNotification();
+    } else if (Notification.permission === "default") {
+      // Request permission from user
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          showNotification();
+        } else {
+          alert("Notifications are disabled. Please enable them to use this feature.");
+        }
+      });
+    } else {
+      alert("Notifications are blocked. Please allow them in your browser settings.");
+    }
+  });
+
+  function showNotification() {
     new Notification("🔔 Habit Hive Reminder", {
-      body: "Don't forget to complete your habits today!",
-      icon: "https://via.placeholder.com/100", // Placeholder icon, replace with your app icon
-    });
-  } else if (Notification.permission === "default" || Notification.permission === "denied") {
-    Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
-        new Notification("🔔 Habit Hive Reminder", {
-          body: "You're all set! Keep tracking your habits 🎯",
-          icon: "https://via.placeholder.com/100", // Placeholder icon
-        });
-      } else {
-        alert("You denied notifications. Please enable them to get reminders.");
-      }
+      body: "Remember to track your habits today! 💪",
+      icon: "https://via.placeholder.com/100", // Replace with your custom icon URL
     });
   }
 });
