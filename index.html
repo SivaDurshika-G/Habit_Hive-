@@ -1,53 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habit Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit Hive</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="app-container">
+    <h1>🐝 Habit Hive</h1>
 
-    <div class="container">
-        <div class="box">
-            <h1>Habit Tracker💬</h1>
-
-            <!-- Notification Permission -->
-            <button id="enable-notifications">Enable Notifications</button>
-            <p id="notification-status">Notifications are disabled</p>
-
-            <!-- Category Selection -->
-            <div id="category-selection">
-                <label for="category">Choose Habit Category:</label>
-                <select id="category">
-                    <option value="Health">Health</option>
-                    <option value="Study">Study</option>
-                    <option value="Productivity">Productivity</option>
-                    <option value="Lifestyle">Lifestyle</option>
-                </select>
-            </div>
-
-            <!-- Habit Form -->
-            <div id="habit-form">
-                <input type="text" id="habit-input" placeholder="Enter a new habit..." />
-                <button onclick="addHabit()">Add Habit</button>
-            </div>
-
-            <!-- Habit List -->
-            <div id="habit-list">
-                <h3>Your Habits</h3>
-                <ul id="habit-ul">
-                    <!-- List of habits will be displayed here -->
-                </ul>
-            </div>
-
-            <!-- Footer Section -->
-            <footer>
-                <p>Made with ❤️ By Siva</p>
-            </footer>
-        </div>
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <h2>Profile</h2>
+      <form id="profile-form">
+        <input type="text" id="username" placeholder="Enter your name" required>
+        <button type="submit">Save Profile</button>
+      </form>
+      <p id="greeting"></p>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Habit Section -->
+    <div class="habit-section">
+      <h2>Track Your Habits</h2>
+      <form id="habit-form">
+        <input type="text" id="habit-input" placeholder="Enter new habit" required>
+        <button type="submit">Add Habit</button>
+      </form>
+      <ul id="habit-list"></ul>
+    </div>
+
+    <!-- Notifications Section -->
+    <div class="notifications-section">
+      <h2>Notifications 🔔</h2>
+      <button id="notify-btn">Show Notification</button>
+    </div>
+
+    <!-- Analysis Section -->
+    <div class="analysis-section">
+      <h2>Habit Analysis</h2>
+      <canvas id="habit-chart" width="300" height="200"></canvas>
+    </div>
+
+    <!-- Rewards Section -->
+    <div class="rewards-section">
+      <h2>Rewards 🎉</h2>
+      <ul id="rewards-list"></ul>
+    </div>
+  </div>
+<div class="footer">
+  <p id="footer-text"></p>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
