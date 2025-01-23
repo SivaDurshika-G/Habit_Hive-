@@ -1,69 +1,117 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Profile Section
-  const profileForm = document.getElementById("profile-form");
-  const greeting = document.getElementById("greeting");
-  profileForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const username = document.getElementById("username").value;
-    greeting.textContent = `Hello, ${username}! Welcome to Habit Hive 🐝`;
-    profileForm.reset();
-  });
+// script.js
 
-  // Habit Section
-  const habitForm = document.getElementById("habit-form");
-  const habitList = document.getElementById("habit-list");
-  habitForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const habit = document.getElementById("habit-input").value;
-    const li = document.createElement("li");
-    li.textContent = habit;
-    habitList.appendChild(li);
-    habitForm.reset();
-  });
+const addBtn = document.getElementById("add-btn");
+const habitInput = document.getElementById("habit-input");
+const habitsList = document.getElementById("habits-list");
 
-  document.addEventListener("DOMContentLoaded", () => {
-  const notifyBtn = document.getElementById("notify-btn");
+// Profile Logic
+const saveProfileBtn = document.getElementById("save-profile-btn");
+const profileNameInput = document.getElementById("profile-name");
+const welcomeMsg = document.getElementById("welcome-msg");
 
-  notifyBtn.addEventListener("click", () => {
-    // Check if Notification API is supported
-    if (!("Notification" in window)) {
-      alert("Your browser does not support notifications.");
-      return;
-    }
+// Store profile data
+let profileName = localStorage.getItem("profileName");
 
-    // Check Notification Permission
-    if (Notification.permission === "granted") {
-      // Show notification directly
-      showNotification();
-    } else if (Notification.permission === "default") {
-      // Request permission from user
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          showNotification();
-        } else {
-          alert("Notifications are disabled. Please enable them to use this feature.");
-        }
-      });
-    } else {
-      alert("Notifications are blocked. Please allow them in your browser settings.");
-    }
-  });
+// If profileName is found in localStorage, display it
+if (profileName) {
+  welcomeMsg.innerText = `Welcome, ${profileName}! Let's stay on track with your habits.`;
+} else {
+  welcomeMsg.innerText = "Please enter your name!";
+}
 
-  function showNotification() {
-    new Notification("🔔 Habit Hive Reminder", {
-      body: "Remember to track your habits today! 💪",
-      icon: "https://via.placeholder.com/100", // Replace with your custom icon URL
-    });
+// Save Profile
+saveProfileBtn.addEventListener("click", () => {
+  const name = profileNameInput.value.trim();
+  if (name) {
+    profileName = name;
+    localStorage.setItem("profileName", profileName);
+    welcomeMsg.innerText = `Welcome, ${profileName}! Let's stay on track with your habits.`;
+  } else {
+    alert("Please enter a valid name.");
   }
 });
 
-  // Footer Animation
-  const footerText = document.getElementById("footer-text");
-  let footerMessages = ["Made with Love ❤️", "By Siva"];
-  let currentIndex = 0;
+// Sample motivational quotes
+const quotes = [
+  "Believe in yourself and all that you are. 💪",
+  "Success is the sum of small efforts repeated daily. 🌟",
+  "Your habits define your future. 🕒",
+  "Every day is a new opportunity to improve. 🌱",
+  "Stay consistent, stay strong! 🚀",
+];
 
-  setInterval(() => {
-    footerText.textContent = footerMessages[currentIndex];
-    currentIndex = (currentIndex + 1) % footerMessages.length;
-  }, 2000);
+// Store habits and their streaks
+let habits = [];
+
+// Add a new habit
+addBtn.addEventListener("click", () => {
+  const habitText = habitInput.value.trim();
+  if (habitText === "") return alert("Please enter a habit!");
+
+  const newHabit = {
+    text: habitText,
+    streak: 0,
+  };
+
+  habits.push(newHabit);
+  habitInput.value = "";
+  renderHabits();
+});
+
+// Render the list of habits
+function renderHabits() {
+  habitsList.innerHTML = "";
+  habits.forEach((habit, index) => {
+    const habitItem = document.createElement("div");
+    habitItem.classList.add("habit-item");
+
+    const habitText = document.createElement("p");
+    habitText.innerText = `${habit.text} (🔥 Streak: ${habit.streak} days)`;
+
+    const quote = document.createElement("span");
+    quote.innerText = getRandomQuote();
+
+    const streakBtn = document.createElement("button");
+    streakBtn.innerText = "✔️ Mark Done";
+    streakBtn.addEventListener("click", () => {
+      habits[index].streak += 1;
+      renderHabits();
+    });
+
+    habitItem.appendChild(habitText);
+    habitItem.appendChild(quote);
+    habitItem.appendChild(streakBtn);
+    habitsList.appendChild(habitItem);
+  });
+}
+
+// Get a random motivational quote
+function getRandomQuote() {
+  return quotes[Math.floor(Math.random() * quotes.length)];
+}
+
+// Notifications Section
+const notifyBtn = document.getElementById("notify-btn");
+
+notifyBtn.addEventListener("click", () => {
+  if (!("Notification" in window)) {
+    alert("Notifications are not supported by your browser.");
+    return;
+  }
+
+  if (Notification.permission === "granted") {
+    new Notification("🔔 Habit Hive Reminder", {
+      body: "Stay on track with your habits today! 🚀",
+    });
+  } else if (Notification.permission === "default") {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        new Notification("🔔 Habit Hive Reminder", {
+          body: "You're all set to receive reminders! 💪",
+        });
+      } else {
+        alert("Notifications are blocked. Enable them to get reminders.");
+      }
+    });
+  }
 });
