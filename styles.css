@@ -1,3 +1,4 @@
+/* General Body Styling */
 body {
   font-family: Arial, sans-serif;
   background-color: #e0f7ff;
@@ -8,24 +9,30 @@ body {
   min-height: 100vh;
 }
 
+/* App Container Styling */
 .app-container {
-  background: white;
+  background: #ffffff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 90%;
-  max-width: 500px;
+  max-width: 400px;
+  text-align: center;
 }
 
+/* Heading Styling */
 h1 {
   text-align: center;
   color: #0077b6;
-}
-
-section {
   margin-bottom: 20px;
 }
 
+/* Section Spacing */
+div {
+  margin-bottom: 20px;
+}
+
+/* Button Styling */
 button {
   background-color: #0077b6;
   color: white;
@@ -39,6 +46,7 @@ button:hover {
   background-color: #005f8d;
 }
 
+/* Input Styling */
 input {
   width: calc(100% - 20px);
   padding: 10px;
@@ -47,10 +55,7 @@ input {
   border-radius: 5px;
 }
 
-canvas {
-  display: block;
-  margin: 0 auto;
-}
+/* Footer Styling */
 .footer {
   text-align: center;
   margin-top: 20px;
