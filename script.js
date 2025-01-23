@@ -1,101 +1,85 @@
-// Enable notifications
-let notificationsEnabled = false;
-document.getElementById('enable-notifications').onclick = () => {
-    if (Notification.permission === "granted") {
-        notificationsEnabled = true;
-        document.getElementById('notification-status').innerText = "Notifications are enabled";
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                notificationsEnabled = true;
-                document.getElementById('notification-status').innerText = "Notifications are enabled";
-            }
-        });
-    }
-};
+// script.js
 
-// Load habits from localStorage
-let habits = JSON.parse(localStorage.getItem("habits")) || [];
+// Profile Section
+document.getElementById("save-profile").addEventListener("click", function () {
+  const name = document.getElementById("profile-name").value;
+  if (name) {
+    document.getElementById("welcome-message").innerText = `Welcome, ${name}! Stay on track!`;
+    localStorage.setItem("profileName", name);
+  }
+});
 
-// Add habit function
-function addHabit() {
-    const habitInput = document.getElementById('habit-input');
-    const habitText = habitInput.value.trim();
-    const category = document.getElementById('category').value;
+// Load profile on page load
+window.addEventListener("load", function () {
+  const storedName = localStorage.getItem("profileName");
+  if (storedName) {
+    document.getElementById("welcome-message").innerText = `Welcome back, ${storedName}! Let's stay productive.`;
+  }
 
-    if (habitText !== "") {
-        const habit = {
-            text: habitText,
-            category: category,
-            streak: 0,
-            progress: 0
-        };
-        
-        habits.push(habit);
-        localStorage.setItem("habits", JSON.stringify(habits));
+  // Display current date and time
+  const dateTimeElem = document.getElementById("current-date-time");
+  setInterval(() => {
+    const now = new Date();
+    dateTimeElem.innerText = `Today is ${now.toLocaleDateString()} and the time is ${now.toLocaleTimeString()}`;
+  }, 1000);
+});
 
-        // Update habit list
-        renderHabits();
-        habitInput.value = "";
-    } else {
-        alert("Please enter a habit!");
-    }
+// Habit Section
+document.getElementById("add-habit").addEventListener("click", function () {
+  const habit = document.getElementById("habit-input").value;
+  if (habit) {
+    addHabit(habit);
+    document.getElementById("habit-input").value = "";
+  }
+});
+
+function addHabit(habit) {
+  const habitList = document.getElementById("habit-list");
+
+  const habitItem = document.createElement("li");
+  const habitText = document.createElement("span");
+  habitText.innerText = habit;
+
+  const streak = document.createElement("span");
+  streak.innerText = "Streak: 0";
+  streak.style.marginLeft = "10px";
+
+  const markComplete = document.createElement("button");
+  markComplete.innerText = "✔️";
+  markComplete.addEventListener("click", function () {
+    const currentStreak = parseInt(streak.innerText.split(": ")[1]);
+    streak.innerText = `Streak: ${currentStreak + 1}`;
+    displayQuote(habit, streak);
+  });
+
+  const removeHabit = document.createElement("button");
+  removeHabit.innerText = "🗑️";
+  removeHabit.addEventListener("click", function () {
+    habitList.removeChild(habitItem);
+  });
+
+  habitItem.appendChild(habitText);
+  habitItem.appendChild(streak);
+  habitItem.appendChild(markComplete);
+  habitItem.appendChild(removeHabit);
+  habitList.appendChild(habitItem);
 }
 
-// Remove habit function
-function removeHabit(index) {
-    habits.splice(index, 1);
-    localStorage.setItem("habits", JSON.stringify(habits));
-    renderHabits();
+function displayQuote(habit, streakElem) {
+  const quotes = [
+    "Keep going, you're doing great!",
+    "Habits make the master!",
+    "Stay consistent, success is near!",
+    "Every step counts!",
+    `You're nailing your habit: ${habit}!`,
+  ];
+
+  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+  const streakMessage = document.createElement("p");
+  streakMessage.innerText = `Motivation: ${randomQuote}`;
+  streakElem.parentNode.appendChild(streakMessage);
+
+  setTimeout(() => {
+    streakMessage.remove();
+  }, 5000);
 }
-
-// Track Completion (Mark habit as complete)
-function trackCompletion(index) {
-    if (habits[index].progress < 100) {
-        habits[index].progress += 20; // Simulate progress increase
-        habits[index].streak += 1; // Track streak
-        localStorage.setItem("habits", JSON.stringify(habits));
-        renderHabits();
-    }
-}
-
-// Send real notification if habit is incomplete
-function sendReminderNotification(habit) {
-    if (Notification.permission === "granted" && notificationsEnabled) {
-        new Notification("Habit Reminder", {
-            body: `Don't forget to complete your habit: ${habit.text}`,
-            icon: "https://via.placeholder.com/50"  // Use an icon for the notification
-        });
-    }
-}
-
-// Send notifications for incomplete habits (every minute)
-setInterval(() => {
-    if (notificationsEnabled) {
-        habits.forEach(habit => {
-            if (habit.progress < 100) {
-                sendReminderNotification(habit);
-            }
-        });
-    }
-}, 60000); // Reminder every minute
-
-// Render habits from localStorage
-function renderHabits() {
-    const habitList = document.getElementById('habit-ul');
-    habitList.innerHTML = ""; // Clear current list
-
-    habits.forEach((habit, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-            <span>${habit.text} (${habit.category}) - Streak: ${habit.streak}</span>
-            <div class="progress-bar"><div style="width: ${habit.progress}%"></div></div>
-            <button onclick="trackCompletion(${index})">Complete</button>
-            <button onclick="removeHabit(${index})">Remove</button>
-        `;
-        habitList.appendChild(li);
-    });
-}
-
-// Initial render on page load
-renderHabits();
