@@ -1,101 +1,74 @@
-// Enable notifications
-let notificationsEnabled = false;
-document.getElementById('enable-notifications').onclick = () => {
-    if (Notification.permission === "granted") {
-        notificationsEnabled = true;
-        document.getElementById('notification-status').innerText = "Notifications are enabled";
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                notificationsEnabled = true;
-                document.getElementById('notification-status').innerText = "Notifications are enabled";
-            }
-        });
-    }
-};
+document.addEventListener("DOMContentLoaded", () => {
+  // Profile Section
+  const profileForm = document.getElementById("profile-form");
+  const greeting = document.getElementById("greeting");
+  profileForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const username = document.getElementById("username").value;
+    greeting.textContent = `Hello, ${username}! Welcome to Habit Hive 🐝`;
+    profileForm.reset();
+  });
 
-// Load habits from localStorage
-let habits = JSON.parse(localStorage.getItem("habits")) || [];
+  // Habit Section
+  const habitForm = document.getElementById("habit-form");
+  const habitList = document.getElementById("habit-list");
+  habitForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const habit = document.getElementById("habit-input").value;
+    const li = document.createElement("li");
+    li.textContent = habit;
+    habitList.appendChild(li);
+    habitForm.reset();
+  });
 
-// Add habit function
-function addHabit() {
-    const habitInput = document.getElementById('habit-input');
-    const habitText = habitInput.value.trim();
-    const category = document.getElementById('category').value;
+  // Rewards Section
+  const rewardsList = document.getElementById("rewards-list");
+  const achievements = ["First Habit Added 🏆", "5 Streaks Achieved 🎖️", "10 Habits Completed 🎉"];
+  achievements.forEach((reward) => {
+    const li = document.createElement("li");
+    li.textContent = reward;
+    rewardsList.appendChild(li);
+  });
 
-    if (habitText !== "") {
-        const habit = {
-            text: habitText,
-            category: category,
-            streak: 0,
-            progress: 0
-        };
-        
-        habits.push(habit);
-        localStorage.setItem("habits", JSON.stringify(habits));
-
-        // Update habit list
-        renderHabits();
-        habitInput.value = "";
-    } else {
-        alert("Please enter a habit!");
-    }
-}
-
-// Remove habit function
-function removeHabit(index) {
-    habits.splice(index, 1);
-    localStorage.setItem("habits", JSON.stringify(habits));
-    renderHabits();
-}
-
-// Track Completion (Mark habit as complete)
-function trackCompletion(index) {
-    if (habits[index].progress < 100) {
-        habits[index].progress += 20; // Simulate progress increase
-        habits[index].streak += 1; // Track streak
-        localStorage.setItem("habits", JSON.stringify(habits));
-        renderHabits();
-    }
-}
-
-// Send real notification if habit is incomplete
-function sendReminderNotification(habit) {
-    if (Notification.permission === "granted" && notificationsEnabled) {
-        new Notification("Habit Reminder", {
-            body: `Don't forget to complete your habit: ${habit.text}`,
-            icon: "https://via.placeholder.com/50"  // Use an icon for the notification
-        });
-    }
-}
-
-// Send notifications for incomplete habits (every minute)
-setInterval(() => {
-    if (notificationsEnabled) {
-        habits.forEach(habit => {
-            if (habit.progress < 100) {
-                sendReminderNotification(habit);
-            }
-        });
-    }
-}, 60000); // Reminder every minute
-
-// Render habits from localStorage
-function renderHabits() {
-    const habitList = document.getElementById('habit-ul');
-    habitList.innerHTML = ""; // Clear current list
-
-    habits.forEach((habit, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-            <span>${habit.text} (${habit.category}) - Streak: ${habit.streak}</span>
-            <div class="progress-bar"><div style="width: ${habit.progress}%"></div></div>
-            <button onclick="trackCompletion(${index})">Complete</button>
-            <button onclick="removeHabit(${index})">Remove</button>
-        `;
-        habitList.appendChild(li);
+  // Notifications Section
+  const notifyBtn = document.getElementById("notify-btn");
+  notifyBtn.addEventListener("click", () => {
+    new Notification("🔔 Habit Hive Reminder", {
+      body: "Don't forget to complete your habits today!",
     });
-}
+  });
 
-// Initial render on page load
-renderHabits();
+  // Analysis Section
+  const ctx = document.getElementById("habit-chart").getContext("2d");
+  const habitChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Habit 1", "Habit 2", "Habit 3"],
+      datasets: [
+        {
+          label: "Completion (%)",
+          data: [50, 75, 90],
+          backgroundColor: ["#0077b6", "#00b4d8", "#90e0ef"],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    },
+  });
+
+  // Check Notification Permission
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+});
+// Footer Text Animation
+const footerText = document.getElementById("footer-text");
+let footerMessages = ["Made with Love ❤️", "By Siva"];
+let currentIndex = 0;
+
+setInterval(() => {
+  footerText.textContent = footerMessages[currentIndex];
+  currentIndex = (currentIndex + 1) % footerMessages.length;
+}, 2000);
