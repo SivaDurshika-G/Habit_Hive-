@@ -1,55 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habit Tracker</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-    <div class="container">
-        <div class="box">
-            <h1>Habit Hive 🐝</h1>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit Hive 🐝</title>
 <p>Track your habits and stay motivated! 🌟</p>
 
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <h1>Habit Tracker</h1>
 
-            <!-- Notification Permission -->
-            <button id="enable-notifications">Enable Notifications</button>
-            <p id="notification-status">Notifications are disabled</p>
-
-            <!-- Category Selection -->
-            <div id="category-selection">
-                <label for="category">Choose Habit Category:</label>
-                <select id="category">
-                    <option value="Health">Health</option>
-                    <option value="Study">Study</option>
-                    <option value="Productivity">Productivity</option>
-                    <option value="Lifestyle">Lifestyle</option>
-                </select>
-            </div>
-
-            <!-- Habit Form -->
-            <div id="habit-form">
-                <input type="text" id="habit-input" placeholder="Enter a new habit..." />
-                <button onclick="addHabit()">Add Habit</button>
-            </div>
-
-            <!-- Habit List -->
-            <div id="habit-list">
-                <h3>Your Habits</h3>
-                <ul id="habit-ul">
-                    <!-- List of habits will be displayed here -->
-                </ul>
-            </div>
-
-            <!-- Footer Section -->
-            <footer>
-                <p>Made with ❤️ by You</p>
-            </footer>
-        </div>
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <input type="text" id="profile-name" placeholder="Enter your name" />
+      <button id="save-profile">Save Profile</button>
+      <p id="welcome-message"></p>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Add Habit Section -->
+    <div class="habit-section">
+      <input type="text" id="habit-input" placeholder="Enter a habit" />
+      <button id="add-habit">Add Habit</button>
+      <ul id="habit-list"></ul>
+    </div>
+
+    <!-- Date and Time -->
+    <div class="date-time-section">
+      <p id="current-date-time"></p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Made with ❤️ by Siva</p>
+    </footer>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
