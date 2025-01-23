@@ -21,54 +21,31 @@ document.addEventListener("DOMContentLoaded", () => {
     habitForm.reset();
   });
 
-  // Rewards Section
-  const rewardsList = document.getElementById("rewards-list");
-  const achievements = ["First Habit Added 🏆", "5 Streaks Achieved 🎖️", "10 Habits Completed 🎉"];
-  achievements.forEach((reward) => {
-    const li = document.createElement("li");
-    li.textContent = reward;
-    rewardsList.appendChild(li);
-  });
-
   // Notifications Section
   const notifyBtn = document.getElementById("notify-btn");
   notifyBtn.addEventListener("click", () => {
-    new Notification("🔔 Habit Hive Reminder", {
-      body: "Don't forget to complete your habits today!",
-    });
+    if (Notification.permission === "granted") {
+      new Notification("🔔 Habit Hive Reminder", {
+        body: "Don't forget to complete your habits today!",
+      });
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification("🔔 Habit Hive Reminder", {
+            body: "Don't forget to complete your habits today!",
+          });
+        }
+      });
+    }
   });
 
-  // Analysis Section
-  const ctx = document.getElementById("habit-chart").getContext("2d");
-  const habitChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: ["Habit 1", "Habit 2", "Habit 3"],
-      datasets: [
-        {
-          label: "Completion (%)",
-          data: [50, 75, 90],
-          backgroundColor: ["#0077b6", "#00b4d8", "#90e0ef"],
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-    },
-  });
+  // Footer Animation
+  const footerText = document.getElementById("footer-text");
+  let footerMessages = ["Made with Love ❤️", "By Siva"];
+  let currentIndex = 0;
 
-  // Check Notification Permission
-  if (Notification.permission !== "granted") {
-    Notification.requestPermission();
-  }
+  setInterval(() => {
+    footerText.textContent = footerMessages[currentIndex];
+    currentIndex = (currentIndex + 1) % footerMessages.length;
+  }, 2000);
 });
-// Footer Text Animation
-const footerText = document.getElementById("footer-text");
-let footerMessages = ["Made with Love ❤️", "By Siva"];
-let currentIndex = 0;
-
-setInterval(() => {
-  footerText.textContent = footerMessages[currentIndex];
-  currentIndex = (currentIndex + 1) % footerMessages.length;
-}, 2000);
